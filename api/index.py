@@ -134,7 +134,7 @@ HTML = """
         {% endfor %}
       </table>
       <form method="POST" action="/reset">
-        <button type="submit" class="btn">Reset Navbatlar</button>
+        <button type="submit" class="btn">Tozalash</button>
       </form>
     {% endif %}
   </body>
