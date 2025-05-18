@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, redirect, url_for, flash, get_flashed_messages
+from flask import Flask, request, render_template_string, redirect, url_for, get_flashed_messages
 from collections import deque
 from datetime import datetime, time
 
@@ -32,10 +32,9 @@ class DynamicQueue:
 
     def assign_customer(self, client_lang: str, now_time: time):
         if client_lang == 'rus':
-            # Top rus tilini biladigan birinchi xodim
             for idx, emp in enumerate(self.queue):
                 if emp.is_available('rus', now_time):
-                    # O'sha xodimni navbatdan chiqarib, oxiriga qo'shamiz
+                    # Rus xodimni navbatdan chiqarib, oxiriga qo'shish
                     self.queue.rotate(-idx)
                     assigned = self.queue.popleft()
                     self.queue.rotate(idx)
@@ -61,10 +60,7 @@ class DynamicQueue:
         emp = self.assign_customer(client_lang, now_time)
         return label, emp.name if emp else "Xodim topilmadi"
 
-# ——— Navbatni inizializatsiya va xodimlarni qo‘shish ———
-dq = DynamicQueue()
-assignments_history = []  # Kelgan mijoz-xodim juftliklari saqlanadi
-
+# ——— Initial staff data and queue initialization ———
 staff_data = [
     ("Ali Kantibekov",      "bilmaydi",    "09:00", "22:00"),
     ("Asilbek To'ychiyev",  "bilmaydi",    "09:00", "22:00"),
@@ -78,6 +74,11 @@ staff_data = [
     ("Олеся Шмелева",       "biladi",      "10:00", "22:00"),
 ]
 
+
+dq = DynamicQueue()
+assignments_history = []  # Kelgan mijoz-xodim juftliklari saqlanadi
+
+# Dastlabki navbatni to‘ldirish
 for name, lvl, start, end in staff_data:
     dq.add_employee(Employee(name, lvl, start, end))
 
@@ -92,6 +93,7 @@ HTML = """
       table { border-collapse: collapse; width: 60%; margin-bottom: 20px; }
       th, td { border: 1px solid #888; padding: 8px; text-align: left; }
       th { background: #f0f0f0; }
+      .btn { margin-top: 10px; }
     </style>
   </head>
   <body>
@@ -113,7 +115,7 @@ HTML = """
     <h2>Yangi mijoz kelishi</h2>
     <form method="POST" action="/assign">
       <label><input type="checkbox" name="is_russian"> Rus mijoz</label>
-      <button type="submit">Navbat berish</button>
+      <button type="submit" class="btn">Navbat berish</button>
     </form>
 
     {% if result %}
@@ -131,6 +133,9 @@ HTML = """
         </tr>
         {% endfor %}
       </table>
+      <form method="POST" action="/reset">
+        <button type="submit" class="btn">Reset Navbatlar</button>
+      </form>
     {% endif %}
   </body>
 </html>
@@ -140,10 +145,12 @@ HTML = """
 def index():
     messages = get_flashed_messages()
     result = messages[0] if messages else None
-    return render_template_string(HTML,
-                                  queue=list(dq.queue),
-                                  result=result,
-                                  history=assignments_history)
+    return render_template_string(
+        HTML,
+        queue=list(dq.queue),
+        result=result,
+        history=assignments_history
+    )
 
 @app.route('/assign', methods=['POST'])
 def assign():
@@ -151,7 +158,17 @@ def assign():
     lang = 'rus' if is_rus else 'non-rus'
     mijoz, xodim = dq.handle_arrival(lang, datetime.now().time())
     assignments_history.insert(0, (mijoz, xodim))
-    flash((mijoz, xodim))
+    return redirect(url_for('index'))
+
+@app.route('/reset', methods=['POST'])
+def reset():
+    # Navbat va tarixni reset qilish
+    dq.queue.clear()
+    dq.customer_count = 0
+    assignments_history.clear()
+    # Dastlabki xodimlarni qayta qo'shish
+    for name, lvl, start, end in staff_data:
+        dq.add_employee(Employee(name, lvl, start, end))
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
