@@ -66,17 +66,18 @@ dq = DynamicQueue()
 assignments_history = []  # Kelgan mijoz-xodim juftliklari saqlanadi
 
 staff_data = [
-    ("Begzod Hakimov",      "biladi",      "09:00", "22:00"),
     ("Ali Kantibekov",      "bilmaydi",    "09:00", "22:00"),
-    ("Samira Xalmirzayeva", "biladi",      "10:00", "22:00"),
-    ("Олеся Шмелева",       "biladi",      "10:00", "22:00"),
+    ("Asilbek To'ychiyev",  "bilmaydi",    "09:00", "22:00"),
     ("Asilbek Usmonov",     "bilmaydi",    "09:00", "22:00"),
+    ("Begzod Hakimov",      "biladi",      "09:00", "22:00"),
     ("Lobar Mamataliyeva",  "bilmaydi",    "09:00", "17:00"),
+    ("Marjona",             "bilmaydi",    "09:00", "18:00"),
+    ("Samira Xalmirzayeva", "biladi",      "10:00", "22:00"),
     ("Sardor Boyto'rayev",  "bilmaydi",    "09:00", "22:00"),
-    ("Marjona",             "bilmaydi",    "09:00", "22:00"),
     ("Zaringis",            "ozgina",      "10:00", "22:00"),
-    ("Aslbek To'ychiyev",   "bilmaydi",    "09:00", "22:00"),
+    ("Олеся Шмелева",       "biladi",      "10:00", "22:00"),
 ]
+
 for name, lvl, start, end in staff_data:
     dq.add_employee(Employee(name, lvl, start, end))
 
