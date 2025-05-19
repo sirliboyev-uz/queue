@@ -70,6 +70,7 @@ staff_data = [
     ("Begzod Hakimov",      "biladi",      "09:00", "22:00"),
     ("Lobar Mamataliyeva",  "bilmaydi",    "09:00", "17:00"),
     ("Marjona",             "bilmaydi",    "09:00", "18:00"),
+    ("Odina Kantibekova",   "bilmaydi",    "10:00", "22:00"),
     ("Samira Xalmirzayeva", "biladi",      "10:00", "22:00"),
     ("Sardor Boyto'rayev",  "bilmaydi",    "09:00", "22:00"),
     ("Zaringis",            "ozgina",      "10:00", "22:00"),
