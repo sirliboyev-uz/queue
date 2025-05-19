@@ -1,9 +1,11 @@
 from flask import Flask, request, render_template_string, redirect, url_for, get_flashed_messages
 from collections import deque
 from datetime import datetime, time
+import zoneinfo
 
 app = Flask(__name__)
 app.secret_key = 'change_this_to_a_secure_random_key'
+TASHKENT = zoneinfo.ZoneInfo("Asia/Tashkent")
 
 # ——— Xodim va navbat klasslari ———
 class Employee:
@@ -156,7 +158,7 @@ def index():
 def assign():
     is_rus = 'is_russian' in request.form
     lang = 'rus' if is_rus else 'non-rus'
-    mijoz, xodim = dq.handle_arrival(lang, datetime.now().time())
+    mijoz, xodim = dq.handle_arrival(lang,datetime.now(TASHKENT).time())
     assignments_history.insert(0, (mijoz, xodim))
     return redirect(url_for('index'))
 
